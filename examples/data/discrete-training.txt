@@ -1,0 +1,21 @@
+Age,Education,Income,Marital Status
+36 - 55,masters,high,single,will buy
+18 - 35,high school,low,single,won't buy
+36 - 55,masters,low,single,will buy
+18 - 35,bachelors,high,single,won't buy
+< 18,high school,low,single,will buy
+18 - 35,bachelors,high,married,won't buy
+36 - 55,bachelors,low,married,won't buy
+> 55,bachelors,high,single,will buy
+36 - 55,masters,low,married,won't buy
+> 55,masters,low,married,will buy
+36 - 55,masters,high,single,will buy
+> 55,masters,high,single,will buy
+< 18,high school,high,single,won't buy
+36 - 55,masters,low,single,will buy
+36 - 55,high school,low,single,will buy
+< 18,high school,low,married,will buy
+18 - 35,bachelors,high,married,won't buy
+> 55,high school,high,married,will buy
+> 55,bachelors,low,single,will buy
+36 - 55,high school,high,married,won't buy

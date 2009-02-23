@@ -1,0 +1,4 @@
+36 - 55,masters,high,single,will buy
+18 - 35,high school,low,single,won't buy
+18 - 35,masters,high,single,won't buy
+36 - 55,high school,low,single,will buy
