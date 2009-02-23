@@ -1,1 +1,1 @@
-Dir[File.join(File.dirname(__FILE__), 'decisiontree/**/*.rb')].sort.each { |lib| require lib }
+require File.dirname(__FILE__) + "/id3_tree.rb"
