@@ -16,3 +16,28 @@ A ruby library which implements ID3 (information gain) algorithm for decision tr
 - Bagging is a bagging-based trainer (quite obvious), which trains 10 Ruleset trainers and when predicting chooses the best output based on voting.
 
 Blog post with explanation & examples: http://www.igvita.com/2007/04/16/decision-tree-learning-in-ruby/
+
+== Example
+
+  require 'decisiontree'
+
+  attributes = ['Temperature']
+  training = [
+    [36.6, 'healthy'],
+    [37, 'sick'],
+    [38, 'sick'],
+    [36.7, 'healthy'],
+    [40, 'sick'],
+    [50, 'really sick'],
+  ]
+
+  # Instantiate the tree, and train it based on the data (set default to '1')
+  dec_tree = DecisionTree::ID3Tree.new(attributes, training, 'sick', :continuous)
+  dec_tree.train
+
+  test = [37, 'sick']
+
+  decision = dec_tree.predict(test)
+  puts "Predicted: #{decision} ... True decision: #{test.last}";
+
+  => Predicted: sick ... True decision: sick
