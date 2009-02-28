@@ -1,6 +1,6 @@
 spec = Gem::Specification.new do |s|
   s.name = 'decisiontree'
-  s.version = '0.3.0'
+  s.version = '0.3.1'
   s.date = '2009-02-21'
   s.summary = 'ID3-based implementation of the M.L. Decision Tree algorithm'
   s.description = s.summary
@@ -8,6 +8,7 @@ spec = Gem::Specification.new do |s|
   s.homepage = "http://github.com/igrigorik/decisiontree"
   s.has_rdoc = true
   s.authors = ["Ilya Grigorik"]
+  s.rubyforge_project = "decisiontree"
  
   # ruby -rpp -e' pp `git ls-files`.split("\n") '
   s.files = ["README.rdoc",
