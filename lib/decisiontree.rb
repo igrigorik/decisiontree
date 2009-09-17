@@ -1,1 +1,1 @@
-require File.dirname(__FILE__) + "/id3_tree.rb"
+require File.dirname(__FILE__) + '/decisiontree/id3_tree.rb'

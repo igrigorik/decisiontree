@@ -8,10 +8,10 @@ describe DecisionTree::ID3Tree do
       [1,0,1],
       [0,1,0]
     ]
-
+        
     dec_tree = DecisionTree::ID3Tree.new(labels, data, 1, :discrete)
     dec_tree.train
-
+        
     dec_tree.predict([1,0]).should == 1
     dec_tree.predict([0,1]).should == 0
   end

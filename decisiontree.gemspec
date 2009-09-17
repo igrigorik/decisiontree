@@ -11,16 +11,19 @@ spec = Gem::Specification.new do |s|
   s.rubyforge_project = "decisiontree"
  
   # ruby -rpp -e' pp `git ls-files`.split("\n") '
-  s.files = ["README.rdoc",
-    "examples/continuous-id3.rb",
-    "examples/data/continuous-test.txt",
-    "examples/data/continuous-training.txt",
-    "examples/data/discrete-test.txt",
-    "examples/data/discrete-training.txt",
-    "examples/discrete-id3.rb",
-    "examples/simple.rb",
-    "lib/decisiontree.rb",
-		"lib/id3_tree.rb",
-    "test/test_decisiontree.rb"]
+  s.files = ["CHANGELOG.txt",
+   "README.rdoc",
+   "decisiontree.gemspec",
+   "examples/continuous-id3.rb",
+   "examples/data/continuous-test.txt",
+   "examples/data/continuous-training.txt",
+   "examples/data/discrete-test.txt",
+   "examples/data/discrete-training.txt",
+   "examples/discrete-id3.rb",
+   "examples/simple.rb",
+   "lib/decisiontree.rb",
+   "lib/decisiontree/id3_tree.rb",
+   "test/helper.rb",
+   "test/test_decisiontree.rb"]
 
 end
