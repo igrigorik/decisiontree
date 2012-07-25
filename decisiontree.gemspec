@@ -46,7 +46,8 @@ Gem::Specification.new do |s|
      "examples/discrete-id3.rb",
      "examples/simple.rb"
   ]
-
+  s.add_runtime_dependency "graphr"
+  
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
