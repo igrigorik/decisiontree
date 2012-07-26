@@ -3,11 +3,7 @@
 ### Copyright (c) 2007 Ilya Grigorik <ilya AT igvita DOT com>
 ### Modifed at 2007 by José Ignacio Fernández <joseignacio.fernandez AT gmail DOT com>
 
-begin
-  require 'graph/graphviz_dot'
-rescue LoadError
-  STDERR.puts "graph/graphviz_dot not installed, graphing functionality not included."
-end
+require 'graphr'
 
 class Object
   def save_to_file(filename)
