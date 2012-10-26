@@ -47,7 +47,10 @@ Gem::Specification.new do |s|
      "examples/simple.rb"
   ]
   s.add_runtime_dependency "graphr"
-  
+  s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec-given"
+  s.add_development_dependency "pry"
+
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
