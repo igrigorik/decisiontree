@@ -2,6 +2,20 @@ require 'spec_helper'
 
 describe describe DecisionTree::ID3Tree do
 
+  describe "simple discrete case" do
+    Given(:labels) { ["sun", "rain"]}
+    Given(:data) do
+      [
+        [1,0,1],
+        [0,1,0]
+      ]
+    end
+    Given(:tree) { DecisionTree::ID3Tree.new(labels, data, 1, :discrete) }
+    When { tree.train }
+    Then { tree.predict([1,0]).should == 1 }
+    Then { tree.predict([0,1]).should == 0 }
+  end
+
   describe "discrete attributes" do
     Given(:labels) { ["hungry", "color"] }
     Given(:data) do
@@ -59,6 +73,5 @@ describe describe DecisionTree::ID3Tree do
     Then { tree.predict([7, "red"]).should == "angry" }
     Then { tree.predict([2, "blue"]).should == "not angry" }
   end
-
 
 end

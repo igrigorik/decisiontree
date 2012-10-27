@@ -1,19 +1,7 @@
-require 'rake'
+require 'bundler'
+Bundler::GemHelper.install_tasks
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "decisiontree"
-    gemspec.summary = "ID3-based implementation of the M.L. Decision Tree algorithm"
-    gemspec.description = gemspec.summary
-    gemspec.email = "ilya@igvita.com"
-    gemspec.homepage = "http://github.com/igrigorik/decisiontree"
-    gemspec.authors = ["Ilya Grigorik"]
-    gemspec.rubyforge_project = "decisiontree"
-  end
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new
 
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
-end
-
+task :default => :spec
