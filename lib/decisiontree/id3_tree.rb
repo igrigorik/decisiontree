@@ -186,7 +186,7 @@ module DecisionTree
           child = attr[1][key]
           child_text = "#{child}\n(#{child.to_s.clone.object_id})"
         end
-        label_text = "#{key} #{@type == :continuous ? attr[0].threshold : ""}"
+        label_text = "#{key} #{type(attr[0].attribute) == :continuous ? attr[0].threshold : ""}"
 
         [parent_text, child_text, label_text]
       end
