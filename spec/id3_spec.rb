@@ -74,4 +74,19 @@ describe describe DecisionTree::ID3Tree do
     Then { tree.predict([2, "blue"]).should == "not angry" }
   end
 
+  describe "infinite recursion case" do
+    Given(:labels) { [:a, :b, :c] }
+    Given(:data) do
+      [
+        ["a1", "b0", "c0", "RED"],
+        ["a1", "b1", "c1", "RED"],
+        ["a1", "b1", "c0", "BLUE"],
+        ["a1", "b0", "c1", "BLUE"]
+      ]
+    end
+    Given(:tree) { DecisionTree::ID3Tree.new(labels, data, "RED", :discrete) }
+    When { tree.train }
+    Then { tree.predict(["a1","b0","c0"]).should == "RED" }
+  end
+
 end
