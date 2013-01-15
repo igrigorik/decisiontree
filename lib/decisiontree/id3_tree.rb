@@ -76,7 +76,7 @@ module DecisionTree
       performance = attributes.collect { |attribute| fitness_for(attribute).call(data, attributes, attribute) }
       max = performance.max { |a,b| a[0] <=> b[0] }
       min = performance.min { |a,b| a[0] <=> b[0] }
-      max = performance.shuffle.first if max == min
+      max = performance.shuffle.first if max[0] == min[0]
       best = Node.new(attributes[performance.index(max)], max[1], max[0])
       best.threshold = nil if @type == :discrete
       @used.has_key?(best.attribute) ? @used[best.attribute] += [best.threshold] : @used[best.attribute] = [best.threshold]
