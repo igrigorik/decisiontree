@@ -69,9 +69,14 @@ module DecisionTree
       # return classification if all examples have the same classification
       return data.first.last if data.classification.uniq.size == 1
 
-      # Choose best attribute (1. enumerate all attributes / 2. Pick best attribute)
+      # Choose best attribute:
+      # 1. enumerate all attributes
+      # 2. Pick best attribute
+      # 3. If attributes all score the same, then pick a random one to avoid infinite recursion.
       performance = attributes.collect { |attribute| fitness_for(attribute).call(data, attributes, attribute) }
       max = performance.max { |a,b| a[0] <=> b[0] }
+      min = performance.min { |a,b| a[0] <=> b[0] }
+      max = performance.shuffle.first if max[0] == min[0]
       best = Node.new(attributes[performance.index(max)], max[1], max[0])
       best.threshold = nil if @type == :discrete
       @used.has_key?(best.attribute) ? @used[best.attribute] += [best.threshold] : @used[best.attribute] = [best.threshold]
