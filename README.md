@@ -41,6 +41,25 @@ decision = dec_tree.predict([37, 'sick'])
 puts "Predicted: #{decision} ... True decision: #{test.last}";
 
 # => Predicted: sick ... True decision: sick
+
+# Specify type ("discrete" or "continuous") in the training data
+labels = ["hunger", "color"]
+training = [
+        [8, "red", "angry"],
+        [6, "red", "angry"],
+        [7, "red", "angry"],
+        [7, "blue", "not angry"],
+        [2, "red", "not angry"],
+        [3, "blue", "not angry"],
+        [2, "blue", "not angry"],
+        [1, "red", "not angry"]
+]
+
+dec_tree = DecisionTree::ID3Tree.new(labels, data, "not angry", color: :discrete, hunger: :continuous)
+dec_tree.train
+
+decision = dec_tree.predict([7, "red"]
+puts "Predicted: #{decision} ... True decision: #{test.last}";
 ```
 
 ## License
