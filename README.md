@@ -58,7 +58,7 @@ training = [
 dec_tree = DecisionTree::ID3Tree.new(labels, data, "not angry", color: :discrete, hunger: :continuous)
 dec_tree.train
 
-decision = dec_tree.predict([7, "red"]
+decision = dec_tree.predict([7, "red"])
 puts "Predicted: #{decision} ... True decision: #{test.last}";
 ```
 
