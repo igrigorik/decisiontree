@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/igrigorik/decisiontree"
   s.summary     = %q{ID3-based implementation of the M.L. Decision Tree algorithm}
   s.description = s.summary
+  s.license     = "MIT"
 
   s.rubyforge_project = "decisiontree"
 
