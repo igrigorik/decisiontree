@@ -89,4 +89,20 @@ describe describe DecisionTree::ID3Tree do
     Then { tree.predict(["a1","b0","c0"]).should == "RED" }
   end
 
+  describe "numerical labels case" do
+    Given(:labels) { [1, 2] }
+    Given(:data) do
+      [
+        [1, 1, true],
+        [1, 2, false],
+        [2, 1, false],
+        [2, 2, true]
+      ]
+    end
+    Given(:tree) { DecisionTree::ID3Tree.new labels, data, nil, :discrete }
+    When { tree.train }
+    Then {
+      lambda { tree.predict([1, 1]) }.should_not raise_error
+    }
+  end
 end

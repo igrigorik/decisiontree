@@ -42,6 +42,7 @@ module DecisionTree
     end
 
     def train(data=@data, attributes=@attributes, default=@default)
+      attributes = attributes.map {|e| e.to_s}
       initialize(attributes, data, default, @type)
 
       # Remove samples with same attributes leaving most common classification
