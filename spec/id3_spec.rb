@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe describe DecisionTree::ID3Tree do
+  after :each do
+    File.delete("continuous.png") if File.file?("continuous.png")
+  end
 
   describe "simple discrete case" do
     Given(:labels) { ["sun", "rain"]}
