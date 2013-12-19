@@ -103,4 +103,23 @@ describe describe DecisionTree::ID3Tree do
       lambda { tree.predict([1, 1]) }.should_not raise_error
     }
   end
+
+  describe "create a figure" do
+    after(:all) do
+      File.delete("just_a_spec.png") if File.file?("just_a_spec.png")
+    end
+
+    Given(:labels) { ["sun", "rain"]}
+    Given(:data) do
+      [
+        [1,0,1],
+        [0,1,0]
+      ]
+    end
+    Given(:tree) { DecisionTree::ID3Tree.new(labels, data, 1, :discrete) }
+    When { tree.train }
+    When(:result) { tree.graph("just_a_spec") }
+    Then { expect(result).to_not have_failed }
+    And { File.file?("just_a_spec.png") }
+  end
 end
