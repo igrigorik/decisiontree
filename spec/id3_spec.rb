@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe describe DecisionTree::ID3Tree do
-  after :each do
-    File.delete("continuous.png") if File.file?("continuous.png")
-  end
 
   describe "simple discrete case" do
     Given(:labels) { ["sun", "rain"]}
@@ -51,7 +48,6 @@ describe describe DecisionTree::ID3Tree do
     end
     Given(:tree) { DecisionTree::ID3Tree.new(labels, data, "not angry", :continuous) }
     When { tree.train }
-    Then { tree.graph("continuous") }
     Then { tree.predict([7, 7]).should == "angry" }
     Then { tree.predict([2, 3]).should == "not angry" }
   end
@@ -72,7 +68,6 @@ describe describe DecisionTree::ID3Tree do
     end
     Given(:tree) { DecisionTree::ID3Tree.new(labels, data, "not angry", color: :discrete, hunger: :continuous) }
     When { tree.train }
-    Then { tree.graph("continuous") }
     Then { tree.predict([7, "red"]).should == "angry" }
     Then { tree.predict([2, "blue"]).should == "not angry" }
   end
