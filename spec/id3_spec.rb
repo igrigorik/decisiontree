@@ -106,7 +106,7 @@ describe describe DecisionTree::ID3Tree do
 
   describe "create a figure" do
     after(:all) do
-      File.delete("just_a_spec.png") if File.file?("just_a_spec.png")
+      File.delete("#{FIGURE_FILENAME}.png") if File.file?("#{FIGURE_FILENAME}.png")
     end
 
     Given(:labels) { ["sun", "rain"]}
@@ -118,8 +118,8 @@ describe describe DecisionTree::ID3Tree do
     end
     Given(:tree) { DecisionTree::ID3Tree.new(labels, data, 1, :discrete) }
     When { tree.train }
-    When(:result) { tree.graph("just_a_spec") }
+    When(:result) { tree.graph(FIGURE_FILENAME) }
     Then { expect(result).to_not have_failed }
-    And { File.file?("just_a_spec.png") }
+    And { File.file?("#{FIGURE_FILENAME}.png") }
   end
 end
