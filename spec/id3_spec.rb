@@ -48,7 +48,6 @@ describe describe DecisionTree::ID3Tree do
     end
     Given(:tree) { DecisionTree::ID3Tree.new(labels, data, "not angry", :continuous) }
     When { tree.train }
-    Then { tree.graph("continuous") }
     Then { tree.predict([7, 7]).should == "angry" }
     Then { tree.predict([2, 3]).should == "not angry" }
   end
@@ -69,7 +68,6 @@ describe describe DecisionTree::ID3Tree do
     end
     Given(:tree) { DecisionTree::ID3Tree.new(labels, data, "not angry", color: :discrete, hunger: :continuous) }
     When { tree.train }
-    Then { tree.graph("continuous") }
     Then { tree.predict([7, "red"]).should == "angry" }
     Then { tree.predict([2, "blue"]).should == "not angry" }
   end
@@ -104,5 +102,24 @@ describe describe DecisionTree::ID3Tree do
     Then {
       lambda { tree.predict([1, 1]) }.should_not raise_error
     }
+  end
+
+  describe "create a figure" do
+    after(:all) do
+      File.delete("#{FIGURE_FILENAME}.png") if File.file?("#{FIGURE_FILENAME}.png")
+    end
+
+    Given(:labels) { ["sun", "rain"]}
+    Given(:data) do
+      [
+        [1,0,1],
+        [0,1,0]
+      ]
+    end
+    Given(:tree) { DecisionTree::ID3Tree.new(labels, data, 1, :discrete) }
+    When { tree.train }
+    When(:result) { tree.graph(FIGURE_FILENAME) }
+    Then { expect(result).to_not have_failed }
+    And { File.file?("#{FIGURE_FILENAME}.png") }
   end
 end
