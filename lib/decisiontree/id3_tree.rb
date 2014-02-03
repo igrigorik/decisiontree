@@ -131,10 +131,10 @@ module DecisionTree
       descend(@tree, test)
     end
 
-    def graph(filename)
+    def graph(filename, file_type = "png")
       require 'graphr'
       dgp = DotGraphPrinter.new(build_tree)
-      dgp.write_to_file("#{filename}.png", "png")
+      dgp.write_to_file("#{filename}.#{file_type}", file_type)
     end
 
     def ruleset
