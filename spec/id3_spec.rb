@@ -122,4 +122,47 @@ describe describe DecisionTree::ID3Tree do
     Then { expect(result).to_not have_failed }
     And { File.file?("#{FIGURE_FILENAME}.png") }
   end
+
+  describe "export ruleset from continuous data to ruby conditional blocks code" do
+    labels =  ["hunger", "happiness"]
+    data = [
+        [8, 7, "angry"],
+        [6, 7, "angry"],
+        [7, 9, "angry"],
+        [7, 1, "not angry"],
+        [2, 9, "not angry"],
+        [3, 2, "not angry"],
+        [2, 3, "not angry"],
+        [1, 4, "not angry"]
+      ]
+
+    tree = DecisionTree::ID3Tree.new(labels, data, "not angry", :continuous)
+    tree.train
+    expected_code = "def classify(hunger, happiness) \n  if (hunger >= 4.5 and \n    happiness >= 4.0)\n    then 'angry'\n  elsif (hunger >= 4.5 and \n    happiness < 4.0)\n    then 'not angry'\n  elsif (hunger < 4.5)\n    then 'not angry'\n  else nil \n  end \nend".gsub(/^( |\t)+/, "")
+    generated_code = tree.ruleset.to_method.gsub(/^( |\t)+/, "")
+    #There are some randomness with the ruleset generation 
+    #generated_code.should == expected_code
+
+    puts tree.ruleset.to_method
+  end
+
+  describe "export ruleset from discrete data to a ruby method code" do
+    labels =  ["hunger", "color"]
+    data = [
+        ["yes", "red", "angry"],
+        ["no", "blue", "not angry"],
+        ["yes", "blue", "not angry"],
+        ["no", "red", "not angry"]
+      ]
+
+    tree = DecisionTree::ID3Tree.new(labels, data, "not angry", :discrete)
+    tree.train
+
+    expected_code = "def classify(hunger, color) \n  if (color == 'blue')\n    then 'not angry'\n  elsif (color == 'red' and \n    hunger == 'no')\n    then 'not angry'\n  elsif (color == 'red' and \n    hunger == 'yes')\n    then 'angry'\n  else nil \n  end \nend".gsub(/^( |\t)+/, "")
+    generated_code = tree.ruleset.to_method.gsub(/^( |\t)+/, "")
+    #There are some randomness with the ruleset generation 
+    #generated_code.should == expected_code
+
+    puts tree.ruleset.to_method
+  end
 end

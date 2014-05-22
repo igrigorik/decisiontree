@@ -11,6 +11,10 @@ class Object
   def self.load_from_file(filename)
     Marshal.load( File.read( filename ) )
   end
+
+  def is_number?
+    self.to_f.to_s == self.to_s || self.to_i.to_s == self.to_s
+  end
 end
 
 class Array
@@ -296,6 +300,81 @@ module DecisionTree
       end
       return @default, 0.0
     end
+
+    #Generates ruby conditional blocks code based on the ruleset
+    #
+    # Example code generated:
+    #
+    #   if (hunger >= 4.5 and 
+    #     happiness >= 4.0)
+    #     then 'angry'
+    #   elsif (hunger >= 4.5 and 
+    #     happiness < 4.0)
+    #     then 'not angry'
+    #   elsif (hunger < 4.5)
+    #     then 'not angry'
+    #   else nil 
+    #   end 
+    #
+    def to_code
+        code_str = ""
+
+        @rules.each do |rule|
+          conditions = []
+          conclusion = rule.conclusion.is_number? ? rule.conclusion : "'#{rule.conclusion}'"
+
+          if code_str.empty? then
+            code_str << "  if "
+          else
+            code_str << "  elsif "
+          end
+
+          rule.premises.each do |item|
+            indent = "    " if !conditions.empty?
+            if @type == :continuous then
+              node, operator = item
+              conditions << "#{indent}#{node.attribute} #{operator} #{node.threshold}"
+            else
+              node, value = item
+              conditions << "#{indent}#{node.attribute} == '#{value}'"
+            end
+          end
+
+          conditions_str = conditions.join(" and \n")
+          code_str << "(#{conditions_str})"
+          code_str << "\n    then #{conclusion}\n"
+        end
+
+        code_str << "  else nil \n"
+        code_str << "  end"
+
+        code_str
+      end
+
+      # Generates ruby method code based on the ruleset
+      # See spec/id3_spec for usage examples
+      #
+      # Example code generated:
+      #
+      #   def classify(hunger, happiness) 
+      #     if (hunger >= 4.5 and 
+      #       happiness >= 4.0)
+      #       then 'angry'
+      #     elsif (hunger >= 4.5 and 
+      #       happiness < 4.0)
+      #       then 'not angry'
+      #     elsif (hunger < 4.5)
+      #       then 'not angry'
+      #     else nil 
+      #     end 
+      #   end
+      #
+      def to_method(method_name = "classify")
+        args = @attributes.join(", ")
+        method_str = "def #{method_name}(#{args}) \n"
+        method_str << "#{to_code} \n"
+        method_str << "end"
+      end
   end
 
   class Bagging
