@@ -11,10 +11,6 @@ class Object
   def self.load_from_file(filename)
     Marshal.load( File.read( filename ) )
   end
-
-  def is_number?
-    self.to_f.to_s == self.to_s || self.to_i.to_s == self.to_s
-  end
 end
 
 class Array
@@ -321,7 +317,6 @@ module DecisionTree
 
         @rules.each_with_index do |rule, index|
           conditions = []
-          conclusion = rule.conclusion.is_number? ? rule.conclusion : "'#{rule.conclusion}'"
 
           rule.premises.each do |item|
             indent = "    " if !conditions.empty?
@@ -337,7 +332,7 @@ module DecisionTree
           code_str << "  elsif " unless index == 0
           conditions_str = conditions.join(" and \n")
           code_str << "(#{conditions_str})"
-          code_str << "\n    then #{conclusion}\n"
+          code_str << "\n    then '#{rule.conclusion}'\n"
         end
 
         code_str << "  else nil \n"
