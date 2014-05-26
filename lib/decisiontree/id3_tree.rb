@@ -317,17 +317,11 @@ module DecisionTree
     #   end 
     #
     def to_code
-        code_str = ""
+        code_str = "  if "
 
-        @rules.each do |rule|
+        @rules.each_with_index do |rule, index|
           conditions = []
           conclusion = rule.conclusion.is_number? ? rule.conclusion : "'#{rule.conclusion}'"
-
-          if code_str.empty? then
-            code_str << "  if "
-          else
-            code_str << "  elsif "
-          end
 
           rule.premises.each do |item|
             indent = "    " if !conditions.empty?
@@ -340,6 +334,7 @@ module DecisionTree
             end
           end
 
+          code_str << "  elsif " unless index == 0
           conditions_str = conditions.join(" and \n")
           code_str << "(#{conditions_str})"
           code_str << "\n    then #{conclusion}\n"

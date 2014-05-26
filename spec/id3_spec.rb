@@ -124,8 +124,9 @@ describe describe DecisionTree::ID3Tree do
   end
 
   describe "export ruleset from continuous data to ruby conditional blocks code" do
-    labels =  ["hunger", "happiness"]
-    data = [
+    Given(:labels) { ["hunger", "happiness"] }
+    Given(:data) do
+      [
         [8, 7, "angry"],
         [6, 7, "angry"],
         [7, 9, "angry"],
@@ -135,34 +136,32 @@ describe describe DecisionTree::ID3Tree do
         [2, 3, "not angry"],
         [1, 4, "not angry"]
       ]
+    end
 
-    tree = DecisionTree::ID3Tree.new(labels, data, "not angry", :continuous)
-    tree.train
-    expected_code = "def classify(hunger, happiness) \n  if (hunger >= 4.5 and \n    happiness >= 4.0)\n    then 'angry'\n  elsif (hunger >= 4.5 and \n    happiness < 4.0)\n    then 'not angry'\n  elsif (hunger < 4.5)\n    then 'not angry'\n  else nil \n  end \nend".gsub(/^( |\t)+/, "")
-    generated_code = tree.ruleset.to_method.gsub(/^( |\t)+/, "")
-    #There are some randomness with the ruleset generation 
-    #generated_code.should == expected_code
-
-    puts tree.ruleset.to_method
+    Given(:tree) { DecisionTree::ID3Tree.new(labels, data, "not angry", :continuous) }
+    When { tree.train }
+    When(:method_str_code) { tree.ruleset.to_method(:my_classify_method) }
+    When{ eval(method_str_code) }
+    Then { my_classify_method(7, 7).should == "angry" }
+    Then { my_classify_method(2, 3).should == "not angry" }
   end
 
   describe "export ruleset from discrete data to a ruby method code" do
-    labels =  ["hunger", "color"]
-    data = [
+    Given(:labels) { ["hunger", "color"] }
+    Given(:data) do
+      [
         ["yes", "red", "angry"],
         ["no", "blue", "not angry"],
         ["yes", "blue", "not angry"],
         ["no", "red", "not angry"]
       ]
+    end
 
-    tree = DecisionTree::ID3Tree.new(labels, data, "not angry", :discrete)
-    tree.train
-
-    expected_code = "def classify(hunger, color) \n  if (color == 'blue')\n    then 'not angry'\n  elsif (color == 'red' and \n    hunger == 'no')\n    then 'not angry'\n  elsif (color == 'red' and \n    hunger == 'yes')\n    then 'angry'\n  else nil \n  end \nend".gsub(/^( |\t)+/, "")
-    generated_code = tree.ruleset.to_method.gsub(/^( |\t)+/, "")
-    #There are some randomness with the ruleset generation 
-    #generated_code.should == expected_code
-
-    puts tree.ruleset.to_method
+    Given(:tree) { DecisionTree::ID3Tree.new labels, data, "not angry", :discrete }
+    When { tree.train }
+    When(:method_str_code) { tree.ruleset.to_method(:my_classify_method) }
+    When{ eval(method_str_code) }
+    Then { send(:my_classify_method, "yes", "red").should == "angry" }
+    Then { my_classify_method("yes", "red").should == "angry" }
   end
 end
