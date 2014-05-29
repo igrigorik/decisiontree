@@ -173,10 +173,10 @@ describe describe DecisionTree::ID3Tree do
         ["18 - 35","high school","low","single","will not buy"],
         ["36 - 55","masters","low","single","will buy"],
         ["18 - 35","bachelors","high","single","will not buy"],
-        ["< 18","high school","low","single","will buy"],
+        ["<= 18","high school","low","single","will buy"],
         ["18 - 35","bachelors","high","married","will not buy"],
         ["36 - 55","bachelors","low","married","will not buy"],
-        ["> 55","bachelors","high","single","will buy"],
+        [">= 55","bachelors","high","single","will buy"],
         ["36 - 55","masters","low","married","will not buy"],
         ["> 55","masters","low","married","will buy"],
         ["36 - 55","masters","high","single","will buy"],
@@ -190,4 +190,32 @@ describe describe DecisionTree::ID3Tree do
     When { eval(method_str_code) }
     Then { send(:my_classify_method, "36 - 55","masters","high","single").should == "will buy" }
   end
+end
+
+describe DecisionTree::Ruleset do
+
+  describe "#get_value_range" do 
+    Given(:labels) { ["Age","Education","Income","Marital Status"] }
+    Given(:data) do
+      [
+        ["36 - 55","masters","high","single","will buy"],
+        ["18 - 35","high school","low","single","will not buy"],
+        [">= 55","bachelors","high","single","will buy"]
+      ]
+    end
+
+    Given(:ruleset) { DecisionTree::Ruleset.new(labels, data, "will not buy", :discrete) }
+
+    Then { ruleset.get_value_range(">= 10").should == [nil, ">=", "10"] } 
+    Then { ruleset.get_value_range("<= 10.1").should == [nil, "<=", "10.1"] }
+    Then { ruleset.get_value_range("> 10.0").should == [nil, ">", "10.0"] }
+    Then { ruleset.get_value_range("< 10").should == [nil, "<", "10"] }
+    Then { ruleset.get_value_range("10 - 30").should == ["10", "-", "30"] }
+    Then { ruleset.get_value_range(">=10").should == [nil, ">=", "10"] }
+    Then { ruleset.get_value_range("<=10").should == [nil, "<=", "10"] }
+    Then { ruleset.get_value_range(">10").should == [nil, ">", "10"] }
+    Then { ruleset.get_value_range("<10").should == [nil, "<", "10"] }
+    Then { ruleset.get_value_range("10-30.0").should == ["10", "-", "30.0"] }
+  end
+
 end

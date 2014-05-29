@@ -338,7 +338,7 @@ module DecisionTree
               if !value1.nil? and !value2.nil? then
                 conditions << "#{indent}(#{node.attribute.to_attr_name}.to_f >= #{value1} and #{node.attribute.to_attr_name}.to_f <= #{value2})"
               else
-                conditions << "#{indent}#{node.attribute.to_attr_name}.to_f #{operator}= #{value2}"
+                conditions << "#{indent}#{node.attribute.to_attr_name}.to_f #{operator} #{value2}"
               end
             else
               conditions << "#{indent}#{node.attribute.to_attr_name} == '#{value}'"
@@ -359,11 +359,11 @@ module DecisionTree
     end
 
     def is_value_range?(value)
-      !value.match(/(?<value1>\d+\.?\d+)?(\s+)?(?<operator>[\-\>\<])(\s+)?(?<value2>\d+\.?\d+?)/).nil?
+      !value.match(/(?<value1>\d+\.?\d+)?(\s+)?(?<operator>[\-\>\<\>\=]{1,2})(\s+)?(?<value2>\d+\.?\d+?)/).nil?
     end
 
     def get_value_range(value)
-      res = value.match(/(?<value1>\d+\.?\d+)?(\s+)?(?<operator>[\-\>\<])(\s+)?(?<value2>\d+\.?\d+?)/)
+      res = value.match(/(?<value1>\d+\.?\d+)?(\s+)?(?<operator>[\-\>\<\>\=]{1,2})(\s+)?(?<value2>\d+\.?\d+?)/)
       [res[:value1], res[:operator], res[:value2]]
     end
 
