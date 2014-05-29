@@ -164,4 +164,30 @@ describe describe DecisionTree::ID3Tree do
     Then { send(:my_classify_method, "yes", "red").should == "angry" }
     Then { my_classify_method("yes", "red").should == "angry" }
   end
+
+  describe "export ruleset from discrete data with range values to a ruby method code" do
+    Given(:labels) { ["Age","Education","Income","Marital Status"] }
+    Given(:data) do
+      [
+        ["36 - 55","masters","high","single","will buy"],
+        ["18 - 35","high school","low","single","will not buy"],
+        ["36 - 55","masters","low","single","will buy"],
+        ["18 - 35","bachelors","high","single","will not buy"],
+        ["< 18","high school","low","single","will buy"],
+        ["18 - 35","bachelors","high","married","will not buy"],
+        ["36 - 55","bachelors","low","married","will not buy"],
+        ["> 55","bachelors","high","single","will buy"],
+        ["36 - 55","masters","low","married","will not buy"],
+        ["> 55","masters","low","married","will buy"],
+        ["36 - 55","masters","high","single","will buy"],
+        ["> 55","masters","high","single","will buy"]
+      ]
+    end
+
+    Given(:tree) { DecisionTree::ID3Tree.new labels, data, "will not buy", :discrete }
+    When { tree.train }
+    When(:method_str_code) { tree.ruleset.to_method(:my_classify_method) }
+    When { eval(method_str_code) }
+    Then { send(:my_classify_method, "36 - 55","masters","high","single").should == "will buy" }
+  end
 end
