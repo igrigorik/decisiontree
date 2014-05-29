@@ -32,14 +32,6 @@ class Array
   end
 end
 
-class String
-  def to_attr_name
-    if !self.nil? then
-      self.gsub(/([A-Z\d]+)([A-Z][a-z])/,'\1_\2').gsub(" ", "_").gsub("-", "_").downcase
-    end
-  end
-end
-
 module DecisionTree
   Node = Struct.new(:attribute, :threshold, :gain)
 
@@ -330,18 +322,20 @@ module DecisionTree
           indent = "    " if !conditions.empty?
           if @type == :continuous then
             node, operator = item
-            conditions << "#{indent}#{node.attribute.to_attr_name} #{operator} #{node.threshold}"
+            attribute_normalized = node.attribute.gsub(/\W+/, "_").downcase
+            conditions << "#{indent}#{attribute_normalized} #{operator} #{node.threshold}"
           else
             node, value = item
+            attribute_normalized = node.attribute.gsub(/\W+/, "_").downcase
             if is_value_range?(value) then
               value1, operator, value2 = get_value_range(value)
               if !value1.nil? and !value2.nil? then
-                conditions << "#{indent}(#{node.attribute.to_attr_name}.to_f >= #{value1} and #{node.attribute.to_attr_name}.to_f <= #{value2})"
+                conditions << "#{indent}(#{attribute_normalized}.to_f >= #{value1} and #{attribute_normalized}.to_f <= #{value2})"
               else
-                conditions << "#{indent}#{node.attribute.to_attr_name}.to_f #{operator} #{value2}"
+                conditions << "#{indent}#{attribute_normalized}.to_f #{operator} #{value2}"
               end
             else
-              conditions << "#{indent}#{node.attribute.to_attr_name} == '#{value}'"
+              conditions << "#{indent}#{attribute_normalized} == '#{value}'"
             end
           end
         end
@@ -405,7 +399,7 @@ module DecisionTree
     #   end
     #
     def to_method(method_name = "classify")
-      args = @attributes.map(&:to_attr_name).join(", ")
+      args = @attributes.collect{|attr| attr.gsub(/\W+/, "_").downcase }.join(", ")
       method_str = "def #{method_name}(#{args}) \n"
       method_str << "#{to_code} \n"
       method_str << "end"
