@@ -37,8 +37,9 @@ training = [
 dec_tree = DecisionTree::ID3Tree.new(attributes, training, 'sick', :continuous)
 dec_tree.train
 
-decision = dec_tree.predict([37, 'sick'])
-puts "Predicted: #{decision} ... True decision: #{test.last}";
+test = [37, 'sick']
+decision = dec_tree.predict(test)
+puts "Predicted: #{decision} ... True decision: #{test.last}"
 
 # => Predicted: sick ... True decision: sick
 
@@ -55,11 +56,14 @@ training = [
         [1, "red", "not angry"]
 ]
 
-dec_tree = DecisionTree::ID3Tree.new(labels, data, "not angry", color: :discrete, hunger: :continuous)
+dec_tree = DecisionTree::ID3Tree.new(labels, training, "not angry", color: :discrete, hunger: :continuous)
 dec_tree.train
 
-decision = dec_tree.predict([7, "red"])
-puts "Predicted: #{decision} ... True decision: #{test.last}";
+test = [7, "red", "angry"]
+decision = dec_tree.predict(test)
+puts "Predicted: #{decision} ... True decision: #{test.last}"
+
+# => Predicted: angry ... True decision: angry
 ```
 
 ## License
