@@ -3,16 +3,6 @@
 ### Copyright (c) 2007 Ilya Grigorik <ilya AT igvita DOT com>
 ### Modifed at 2007 by José Ignacio Fernández <joseignacio.fernandez AT gmail DOT com>
 
-class Object
-  def save_to_file(filename)
-    File.open(filename, 'w+') { |f| f << Marshal.dump(self) }
-  end
-
-  def self.load_from_file(filename)
-    Marshal.load(File.read(filename))
-  end
-end
-
 module DecisionTree
   Node = Struct.new(:attribute, :threshold, :gain)
 
