@@ -8,18 +8,22 @@ class Array
     return 0 if empty?
 
     info = {}
-    total = 0
     each do |i|
       info[i] = !info[i] ? 1 : (info[i] + 1)
-      total += 1
     end
 
-    result = 0
+    result(info, length)
+  end
+
+  private
+
+  def result(info, total)
+    final = 0
     info.each do |_symbol, count|
-      if count > 0
-        result += -count.to_f / total * Math.log(count.to_f / total) / Math.log(2.0)
-      end
+      next unless count > 0
+      percentage = count.to_f / total
+      final += -percentage * Math.log(percentage) / Math.log(2.0)
     end
-    result
+    final
   end
 end
