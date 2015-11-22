@@ -5,6 +5,8 @@ require 'decisiontree'
 
 # Read in the training data
 training = []
+attributes = nil
+
 File.open('data/discrete-training.txt', 'r').each_line do |line|
   data = line.strip.split(',')
   attributes ||= data
@@ -45,7 +47,7 @@ File.open('data/discrete-test.txt', 'r').each_line do |line|
       v
     end
   end
-  training.push(test_data)
+  test.push(test_data)
 end
 
 # Let the tree predict the output and compare it to the true specified value
