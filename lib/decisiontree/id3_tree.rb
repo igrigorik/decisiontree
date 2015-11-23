@@ -190,7 +190,7 @@ module DecisionTree
         end
         label_text = "#{key} ''"
         if type(attr[0].attribute) == :continuous
-          label_text.gsub!("''", attr[0].threshold)
+          label_text.gsub!("''", attr[0].threshold.to_s)
         end
 
         [parent_text, child_text, label_text]
