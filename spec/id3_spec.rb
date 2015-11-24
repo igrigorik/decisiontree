@@ -12,8 +12,8 @@ describe describe DecisionTree::ID3Tree do
     end
     Given(:tree) { DecisionTree::ID3Tree.new(labels, data, 1, :discrete) }
     When { tree.train }
-    Then { tree.predict([1,0]).should == 1 }
-    Then { tree.predict([0,1]).should == 0 }
+    Then { expect(tree.predict([1,0])).to eq 1 }
+    Then { expect(tree.predict([0,1])).to eq 0 }
   end
 
   describe "discrete attributes" do
@@ -28,8 +28,8 @@ describe describe DecisionTree::ID3Tree do
     end
     Given(:tree) { DecisionTree::ID3Tree.new(labels, data, "not angry", :discrete) }
     When { tree.train }
-    Then { tree.predict(["yes", "red"]).should == "angry" }
-    Then { tree.predict(["no", "red"]).should == "not angry" }
+    Then { expect(tree.predict(["yes", "red"])).to eq "angry" }
+    Then { expect(tree.predict(["no", "red"])).to eq "not angry" }
   end
 
   describe "discrete attributes" do
@@ -48,8 +48,8 @@ describe describe DecisionTree::ID3Tree do
     end
     Given(:tree) { DecisionTree::ID3Tree.new(labels, data, "not angry", :continuous) }
     When { tree.train }
-    Then { tree.predict([7, 7]).should == "angry" }
-    Then { tree.predict([2, 3]).should == "not angry" }
+    Then { expect(tree.predict([7, 7])).to eq "angry" }
+    Then { expect(tree.predict([2, 3])).to eq "not angry" }
   end
 
   describe "a mixture" do
@@ -68,8 +68,8 @@ describe describe DecisionTree::ID3Tree do
     end
     Given(:tree) { DecisionTree::ID3Tree.new(labels, data, "not angry", color: :discrete, hunger: :continuous) }
     When { tree.train }
-    Then { tree.predict([7, "red"]).should == "angry" }
-    Then { tree.predict([2, "blue"]).should == "not angry" }
+    Then { expect(tree.predict([7, "red"])).to eq "angry" }
+    Then { expect(tree.predict([2, "blue"])).to eq "not angry" }
   end
 
   describe "infinite recursion case" do
@@ -84,7 +84,7 @@ describe describe DecisionTree::ID3Tree do
     end
     Given(:tree) { DecisionTree::ID3Tree.new(labels, data, "RED", :discrete) }
     When { tree.train }
-    Then { tree.predict(["a1","b0","c0"]).should == "RED" }
+    Then { expect(tree.predict(["a1","b0","c0"])).to eq "RED" }
   end
 
   describe "numerical labels case" do
@@ -100,7 +100,7 @@ describe describe DecisionTree::ID3Tree do
     Given(:tree) { DecisionTree::ID3Tree.new labels, data, nil, :discrete }
     When { tree.train }
     Then {
-      lambda { tree.predict([1, 1]) }.should_not raise_error
+      expect { tree.predict([1, 1]) }.to_not raise_error
     }
   end
 
