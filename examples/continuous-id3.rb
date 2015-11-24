@@ -6,6 +6,8 @@ include DecisionTree
 
 # Read in the training data
 training = []
+attributes = nil
+
 File.open('data/continuous-training.txt', 'r').each_line do |line|
   data = line.strip.chomp('.').split(',')
   attributes ||= data
