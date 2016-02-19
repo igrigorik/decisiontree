@@ -133,8 +133,8 @@ module DecisionTree
       dgp.write_to_file("#{filename}.#{file_type}", file_type)
     end
 
-    def ruleset
-      rs = Ruleset.new(@attributes, @data, @default, @type)
+    def rule_set
+      rs = RuleSet.new(@attributes, @data, @default, @type)
       rs.rules = build_rules
       rs
     end
@@ -260,7 +260,7 @@ module DecisionTree
     end
   end
 
-  class Ruleset
+  class RuleSet
     attr_accessor :rules
 
     def initialize(attributes, data, default, type)
@@ -322,7 +322,7 @@ module DecisionTree
 
     def train(data = @data, attributes = @attributes, default = @default)
       @classifiers = []
-      10.times { @classifiers << Ruleset.new(attributes, data, default, @type) }
+      10.times { @classifiers << RuleSet.new(attributes, data, default, @type) }
       @classifiers.each do |c|
         c.train(data, attributes, default)
       end
