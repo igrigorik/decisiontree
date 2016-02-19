@@ -261,7 +261,7 @@ module DecisionTree
   end
 
   class RuleSet
-    attr_accessor :rules
+    attr_accessor :rules, :train_data
 
     def initialize(attributes, data, default, type)
       @attributes = attributes
