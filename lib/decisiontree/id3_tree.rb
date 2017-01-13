@@ -130,7 +130,13 @@ module DecisionTree
     def graph(filename, file_type = 'png')
       require 'graphr'
       dgp = DotGraphPrinter.new(build_tree)
+      dgp.size = ''
+      dgp.node_labeler = proc { |n| n.split("\n").first }
       dgp.write_to_file("#{filename}.#{file_type}", file_type)
+    rescue LoadError
+      STDERR.puts "Error: Cannot generate graph."
+      STDERR.puts "       The 'graphr' gem doesn't seem to be installed."
+      STDERR.puts "       Run 'gem install graphr' or add it to your Gemfile."
     end
 
     def ruleset
@@ -188,9 +194,11 @@ module DecisionTree
           child = attr[1][key]
           child_text = "#{child}\n(#{child.to_s.clone.object_id})"
         end
-        label_text = "#{key} ''"
+
         if type(attr[0].attribute) == :continuous
-          label_text.gsub!("''", attr[0].threshold.to_s)
+          label_text = "#{key} #{attr[0].threshold}"
+        else
+          label_text = key
         end
 
         [parent_text, child_text, label_text]
