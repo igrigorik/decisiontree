@@ -139,8 +139,8 @@ module DecisionTree
       STDERR.puts "       Run 'gem install graphr' or add it to your Gemfile."
     end
 
-    def ruleset
-      rs = Ruleset.new(@attributes, @data, @default, @type)
+    def rule_set
+      rs = RuleSet.new(@attributes, @data, @default, @type)
       rs.rules = build_rules
       rs
     end
@@ -268,8 +268,8 @@ module DecisionTree
     end
   end
 
-  class Ruleset
-    attr_accessor :rules
+  class RuleSet
+    attr_accessor :rules, :train_data
 
     def initialize(attributes, data, default, type)
       @attributes = attributes
@@ -330,7 +330,7 @@ module DecisionTree
 
     def train(data = @data, attributes = @attributes, default = @default)
       @classifiers = []
-      10.times { @classifiers << Ruleset.new(attributes, data, default, @type) }
+      10.times { @classifiers << RuleSet.new(attributes, data, default, @type) }
       @classifiers.each do |c|
         c.train(data, attributes, default)
       end
