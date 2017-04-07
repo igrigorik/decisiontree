@@ -8,6 +8,8 @@ require 'set'
 module DecisionTree
   Node = Struct.new(:attribute, :threshold, :gain)
 
+  using ArrayClassification
+
   class ID3Tree
     def initialize(attributes, data, default, type)
       @used = {}
@@ -119,10 +121,14 @@ module DecisionTree
     def id3_discrete(data, attributes, attribute)
       index = attributes.index(attribute)
 
-      values = Set.new
-      data.each { |d| values << d[index] }
-      partitions = values.to_a.sort.collect { |val| data.select { |d| d[index] == val } }
-      remainder = partitions.collect { |p| (p.size.to_f / data.size) * p.classification.entropy }.inject(0) { |a, e| e += a }
+      values = data.map { |row| row[index] }.uniq
+      remainder = values.sort.inject(0) do |sum, val|
+        classification = data.each_with_object([]) do |row, result|
+          result << row.last if row[index] == val
+        end
+
+        sum + ((classification.size.to_f / data.size) * classification.entropy)
+      end
 
       [data.classification.entropy - remainder, index]
     end
@@ -324,6 +330,7 @@ module DecisionTree
 
   class Bagging
     attr_accessor :classifiers
+
     def initialize(attributes, data, default, type)
       @classifiers = []
       @type = type
@@ -333,10 +340,13 @@ module DecisionTree
     end
 
     def train(data = @data, attributes = @attributes, default = @default)
-      @classifiers = []
-      10.times { @classifiers << Ruleset.new(attributes, data, default, @type) }
-      @classifiers.each do |c|
-        c.train(data, attributes, default)
+      @classifiers = 5.times.map do |i|
+        Ruleset.new(attributes, data, default, @type)
+      end
+
+      @classifiers.each_with_index do |classifier, index|
+        puts "Processing classifier ##{index + 1}"
+        classifier.train(data, attributes, default)
       end
     end
 
@@ -352,3 +362,4 @@ module DecisionTree
     end
   end
 end
+
