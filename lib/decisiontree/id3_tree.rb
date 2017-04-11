@@ -6,6 +6,8 @@
 module DecisionTree
   Node = Struct.new(:attribute, :threshold, :gain)
 
+  using ArrayClassification
+
   class ID3Tree
     def initialize(attributes, data, default, type)
       @used = {}
@@ -28,7 +30,7 @@ module DecisionTree
       end
 
       data2 = data2.map do |key, val|
-        key + [val.sort_by { |_k, v| v }.last.first]
+        key + [val.sort_by { |_, v| v }.last.first]
       end
 
       @tree = id3_train(data2, attributes, default)
@@ -41,9 +43,9 @@ module DecisionTree
     def fitness_for(attribute)
       case type(attribute)
       when :discrete
-        proc { |a, b, c| id3_discrete(a, b, c) }
+        proc { |*args| id3_discrete(*args) }
       when :continuous
-        proc { |a, b, c| id3_continuous(a, b, c) }
+        proc { |*args| id3_continuous(*args) }
       end
     end
 
@@ -66,14 +68,13 @@ module DecisionTree
       @used.has_key?(best.attribute) ? @used[best.attribute] += [best.threshold] : @used[best.attribute] = [best.threshold]
       tree, l = {best => {}}, ['>=', '<']
 
-      fitness = fitness_for(best.attribute)
       case type(best.attribute)
       when :continuous
         partitioned_data = data.partition do |d|
           d[attributes.index(best.attribute)] >= best.threshold
         end
         partitioned_data.each_with_index do |examples, i|
-          tree[best][String.new(l[i])] = id3_train(examples, attributes, (data.classification.mode rescue 0), &fitness)
+          tree[best][String.new(l[i])] = id3_train(examples, attributes, (data.classification.mode rescue 0))
         end
       when :discrete
         values = data.collect { |d| d[attributes.index(best.attribute)] }.uniq.sort
@@ -83,7 +84,7 @@ module DecisionTree
           end
         end
         partitions.each_with_index do |examples, i|
-          tree[best][values[i]] = id3_train(examples, attributes - [values[i]], (data.classification.mode rescue 0), &fitness)
+          tree[best][values[i]] = id3_train(examples, attributes - [values[i]], (data.classification.mode rescue 0))
         end
       end
 
@@ -116,11 +117,18 @@ module DecisionTree
 
     # ID3 for discrete label cases
     def id3_discrete(data, attributes, attribute)
-      values = data.collect { |d| d[attributes.index(attribute)] }.uniq.sort
-      partitions = values.collect { |val| data.select { |d| d[attributes.index(attribute)] == val } }
-      remainder = partitions.collect { |p| (p.size.to_f / data.size) * p.classification.entropy }.inject(0) { |a, e| e += a }
+      index = attributes.index(attribute)
 
-      [data.classification.entropy - remainder, attributes.index(attribute)]
+      values = data.map { |row| row[index] }.uniq
+      remainder = values.sort.sum do |val|
+        classification = data.each_with_object([]) do |row, result|
+          result << row.last if row[index] == val
+        end
+
+        ((classification.size.to_f / data.size) * classification.entropy)
+      end
+
+      [data.classification.entropy - remainder, index]
     end
 
     def predict(test)
@@ -320,6 +328,7 @@ module DecisionTree
 
   class Bagging
     attr_accessor :classifiers
+
     def initialize(attributes, data, default, type)
       @classifiers = []
       @type = type
@@ -329,10 +338,13 @@ module DecisionTree
     end
 
     def train(data = @data, attributes = @attributes, default = @default)
-      @classifiers = []
-      10.times { @classifiers << Ruleset.new(attributes, data, default, @type) }
-      @classifiers.each do |c|
-        c.train(data, attributes, default)
+      @classifiers = 10.times.map do |i|
+        Ruleset.new(attributes, data, default, @type)
+      end
+
+      @classifiers.each_with_index do |classifier, index|
+        puts "Processing classifier ##{index + 1}"
+        classifier.train(data, attributes, default)
       end
     end
 
@@ -348,3 +360,4 @@ module DecisionTree
     end
   end
 end
+
