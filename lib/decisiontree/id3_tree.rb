@@ -3,8 +3,6 @@
 ### Copyright (c) 2007 Ilya Grigorik <ilya AT igvita DOT com>
 ### Modifed at 2007 by José Ignacio Fernández <joseignacio.fernandez AT gmail DOT com>
 
-require 'set'
-
 module DecisionTree
   Node = Struct.new(:attribute, :threshold, :gain)
 
@@ -340,7 +338,7 @@ module DecisionTree
     end
 
     def train(data = @data, attributes = @attributes, default = @default)
-      @classifiers = 5.times.map do |i|
+      @classifiers = 10.times.map do |i|
         Ruleset.new(attributes, data, default, @type)
       end
 
