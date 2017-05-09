@@ -120,7 +120,7 @@ module DecisionTree
       index = attributes.index(attribute)
 
       values = data.map { |row| row[index] }.uniq
-      remainder = values.sort.sum do |val|
+      remainder = values.sort.inject(0, :+) do |val|
         classification = data.each_with_object([]) do |row, result|
           result << row.last if row[index] == val
         end
