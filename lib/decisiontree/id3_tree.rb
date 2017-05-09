@@ -324,6 +324,116 @@ module DecisionTree
       end
       [@default, 0.0]
     end
+
+    #Generates ruby conditional blocks code based on the ruleset
+    #
+    # Example code generated:
+    #
+    #   if (hunger >= 4.5 and 
+    #     happiness >= 4.0)
+    #     then 'angry'
+    #   elsif (hunger >= 4.5 and 
+    #     happiness < 4.0)
+    #     then 'not angry'
+    #   elsif (hunger < 4.5)
+    #     then 'not angry'
+    #   else nil 
+    #   end 
+    #
+    def to_code
+      code_str = "  if "
+
+      @rules.each_with_index do |rule, index|
+        conditions = []
+
+        rule.premises.each do |item|
+          indent = "    " if !conditions.empty?
+          if @type == :continuous then
+            node, operator = item
+            attribute_normalized = node.attribute.gsub(/\W+/, "_").downcase
+            conditions << "#{indent}#{attribute_normalized} #{operator} #{node.threshold}"
+          else
+            node, value = item
+            attribute_normalized = node.attribute.gsub(/\W+/, "_").downcase
+            if is_value_range?(value) then
+              value1, operator, value2 = get_value_range(value)
+              if !value1.nil? and !value2.nil? then
+                conditions << "#{indent}(#{attribute_normalized}.to_f >= #{value1} and #{attribute_normalized}.to_f <= #{value2})"
+              else
+                conditions << "#{indent}#{attribute_normalized}.to_f #{operator} #{value2}"
+              end
+            else
+              conditions << "#{indent}#{attribute_normalized} == '#{value}'"
+            end
+          end
+        end
+
+        code_str << "  elsif " unless index == 0
+        conditions_str = conditions.join(" and \n")
+        code_str << "(#{conditions_str})"
+        code_str << "\n    then '#{rule.conclusion}'\n"
+      end
+
+      code_str << "  else nil \n"
+      code_str << "  end"
+
+      code_str
+    end
+
+    def is_value_range?(value)
+      !value.match(/(?<value1>\d+\.?\d+)?(\s+)?(?<operator>[\-\>\<\>\=]{1,2})(\s+)?(?<value2>\d+\.?\d+?)/).nil?
+    end
+
+    def get_value_range(value)
+      res = value.match(/(?<value1>\d+\.?\d+)?(\s+)?(?<operator>[\-\>\<\>\=]{1,2})(\s+)?(?<value2>\d+\.?\d+?)/)
+      [res[:value1], res[:operator], res[:value2]]
+    end
+
+    # Generates ruby method code based on the ruleset
+    # See spec/id3_spec for usage examples
+    #
+    # Example code generated:
+    #
+    #   def classify(hunger, happiness) 
+    #     if (hunger >= 4.5 and 
+    #       happiness >= 4.0)
+    #       then 'angry'
+    #     elsif (hunger >= 4.5 and 
+    #       happiness < 4.0)
+    #       then 'not angry'
+    #     elsif (hunger < 4.5)
+    #       then 'not angry'
+    #     else nil 
+    #     end 
+    #   end
+    #
+    # Example code generated for discrete data with range values 
+    #
+    #   def my_classify_method(age, education, income, marital_status) 
+    #     if ((age.to_f >= 18 and age.to_f <= 35))
+    #       then 'will not buy'
+    #     elsif ((age.to_f >= 36 and age.to_f <= 55) and 
+    #       marital_status == 'married')
+    #       then 'will not buy'
+    #     elsif ((age.to_f >= 36 and age.to_f <= 55) and 
+    #       marital_status == 'single')
+    #       then 'will buy'
+    #     elsif (age.to_f <= 18)
+    #       then 'will buy'
+    #     elsif (age.to_f >= 55)
+    #       then 'will buy'
+    #     else nil 
+    #     end 
+    #   end
+    #
+    def to_method(method_name = "classify")
+      args = @attributes.collect{|attr| attr.gsub(/\W+/, "_").downcase }.join(", ")
+      method_str = "def #{method_name}(#{args}) \n"
+      method_str << "#{to_code} \n"
+      method_str << "end"
+
+      method_str
+    end
   end
 
   class Bagging
