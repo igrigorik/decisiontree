@@ -1,6 +1,6 @@
 # Decision Tree
 
-A ruby library which implements ID3 (information gain) algorithm for decision tree learning. Currently, continuous and discrete datasets can be learned.
+A Ruby library which implements ID3 (information gain) algorithm for decision tree learning. Currently, continuous and discrete datasets can be learned.
 
 - Discrete model assumes unique labels & can be graphed and converted into a png for visual analysis
 - Continuous looks at all possible values for a variable and iteratively chooses the best threshold between all possible assignments. This results in a binary tree which is partitioned by the threshold at every step. (e.g. temperate > 20C)
