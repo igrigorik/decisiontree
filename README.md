@@ -6,7 +6,7 @@ A Ruby library which implements ID3 (information gain) algorithm for decision tr
 - Continuous looks at all possible values for a variable and iteratively chooses the best threshold between all possible assignments. This results in a binary tree which is partitioned by the threshold at every step. (e.g. temperate > 20C)
 
 ## Features
-- ID3 algorithms for continuous and discrete cases, with support for incosistent datasets.
+- ID3 algorithms for continuous and discrete cases, with support for inconsistent datasets.
 - Graphviz component to visualize the learned tree (http://rockit.sourceforge.net/subprojects/graphr/)
 - Support for multiple, and symbolic outputs and graphing of continuos trees.
 - Returns default value when no branches are suitable for input
