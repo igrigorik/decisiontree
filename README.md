@@ -13,7 +13,7 @@ A Ruby library which implements [ID3 (information gain)](https://en.wikipedia.or
 
 ## Implementation
 
-- Ruleset is a class that trains an ID3Tree with 2/3 of the training data, converts it into a set of rules and prunes the rules with the remaining 1/3 of the training data (in a [C4.5](https://en.wikipedia.org/wiki/C4.5_algorithm) way).
+- Ruleset is a class that trains an ID3Tree with 2/3 of the training data, converts it into set of rules and prunes the rules with the remaining 1/3 of the training data (in a [C4.5](https://en.wikipedia.org/wiki/C4.5_algorithm) way).
 - Bagging is a bagging-based trainer (quite obvious), which trains 10 Ruleset trainers and when predicting chooses the best output based on voting.
 
 [Blog post with explanation & examples](http://www.igvita.com/2007/04/16/decision-tree-learning-in-ruby/)
